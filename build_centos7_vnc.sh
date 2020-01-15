@@ -63,7 +63,7 @@ EOF
 buildah run $container chmod 755 /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
 buildah run $container chown guac:guac /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
 
-buildah config --entrypoint "su - guac -c 'vncserver :1 -geometry 1024x768 -nolisten tcp -localhost'" $container
+buildah config --entrypoint "su - guac -c 'vncserver :1 -geometry 1024x768 -nolisten tcp -localhost -fg'" $container
 buildah commit --format docker $container mycentosvnc
 buildah umount $containerid
 umount $mountpoint
