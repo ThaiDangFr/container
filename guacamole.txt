@@ -11,10 +11,13 @@ guacamole
 # https://hub.docker.com/r/guacamole/guacamole
 # https://hub.docker.com/_/postgres
 # https://martinheinz.dev/blog/3
+# https://opensource.com/article/18/6/getting-started-buildah
 
 # options utiles podman : --log-level=debug
 # podman start dbcccc46e25e
 # podman attach dbcccc46e25e
+
+# docker build -t <-> buildah bud -t
 
 
 [centos@MERCURE ~]$ sudo useradd podman
