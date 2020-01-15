@@ -2,7 +2,7 @@ guacamole
 ---------
 
 # !!! CENTOS 8.1 => plus besoin de setenforce 0 !!!
-# setenforce 0 : on dÃ©sactive selinux dans la session courante car le paquet container-selinux-2.94-1.git1e99f1d.module_el8.0.0+58+91b614e7.noarch est trop ancien et il ne laisse pas passer postgres
+# setenforce 0 : on desactive selinux dans la session courante car le paquet container-selinux-2.94-1.git1e99f1d.module_el8.0.0+58+91b614e7.noarch est trop ancien et il ne laisse pas passer postgres
 
 
 # https://computingforgeeks.com/using-podman-and-libpod-to-run-docker-containers/
@@ -54,7 +54,7 @@ guacadmin/guacadmin
 -> changement du mdp de guacadmin
 parametres/preferences
 
--> crÃ©er une "nouvelle connexion"
+-> creer une "nouvelle connexion"
 Nom:VNC
 Protocole:VNC
 Guacd hostname:localhost
