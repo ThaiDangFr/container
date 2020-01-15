@@ -1,0 +1,131 @@
+guacamole
+---------
+
+# !!! CENTOS 8.1 => plus besoin de setenforce 0 !!!
+# setenforce 0 : on dÃ©sactive selinux dans la session courante car le paquet container-selinux-2.94-1.git1e99f1d.module_el8.0.0+58+91b614e7.noarch est trop ancien et il ne laisse pas passer postgres
+
+
+# https://computingforgeeks.com/using-podman-and-libpod-to-run-docker-containers/
+# https://guacamole.apache.org/doc/gug/guacamole-docker.html
+# https://registry.hub.docker.com/r/guacamole/guacd
+# https://hub.docker.com/r/guacamole/guacamole
+# https://hub.docker.com/_/postgres
+# https://martinheinz.dev/blog/3
+
+# options utiles podman : --log-level=debug
+# podman start dbcccc46e25e
+# podman attach dbcccc46e25e
+
+
+[centos@MERCURE ~]$ sudo useradd podman
+[centos@MERCURE ~]$ sudo su - podman 
+
+
+podman pod create --publish 8080:8080 --publish 5901:5901 --name guacpod
+
+podman pull guacamole/guacd
+podman run --pod guacpod --name some-guacd -d guacamole/guacd
+
+podman pull guacamole/guacamole
+podman run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgres > /tmp/initdb.sql
+
+podman pull postgres
+podman run --pod guacpod --name some-postgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql -d postgres
+podman logs some-postgres 
+podman exec -it some-postgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO guacamole_user;'
+podman exec -it some-postgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO guacamole_user;'
+
+podman run --pod guacpod --name some-guacamole -e GUACD_HOSTNAME=localhost -e GUACD_PORT=4822 -e POSTGRES_HOSTNAME=localhost -e POSTGRES_DATABASE=guacamole_db -e POSTGRES_USER=guacamole_user -e POSTGRES_PASSWORD=guacamole_pass -d guacamole/guacamole
+podman logs some-guacamole
+
+firewall-cmd --permanent --new-service=podman
+firewall-cmd --permanent --service=podman --set-description="podman pod ports"
+firewall-cmd --permanent --service=podman --add-port=8080/tcp
+firewall-cmd --permanent --add-service=podman
+systemctl reload firewalld
+firewall-cmd --list-all
+
+http://192.168.0.20:8080/guacamole/
+guacadmin/guacadmin
+
+-> changement du mdp de guacadmin
+parametres/preferences
+
+-> crÃ©er une "nouvelle connexion"
+Nom:VNC
+Protocole:VNC
+Guacd hostname:localhost
+Guacd port:4822
+Encryption:None
+Reseau hote:localhost
+Reseau port:5901
+
+
+# vncviewer -via centos@192.168.0.20 -QualityLevel 9 -NoJPEG -FullScreen localhost:1
+
+
+container avec centos 7 + vnc
+-----------------------------
+podman pull centos:centos7.7.1908
+podman run --pod guacpod --privileged --shm-size=256m --name mycentos -h mycentos -it centos:centos7.7.1908 bash -l
+
+
+yum -y install epel-release
+yum -y install tigervnc-server fluxbox xterm wget unzip xorg-x11-apps
+yum -y install xorg-x11-fonts* dbus-x11
+yum -y update
+
+
+vi /etc/yum.repos.d/google-chrome.repo 
+[google-chrome]
+name=google-chrome
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/x86_64
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+
+yum -y install google-chrome-stable
+
+
+
+useradd guac
+su - guac
+
+vi /home/guac/.Xclients 
+xsetroot -solid grey
+xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
+startfluxbox &
+
+chmod 755 /home/guac/.Xclients
+
+
+mkdir /home/guac/.vnc
+chmod 755 /home/guac/.vnc
+echo 'myvncpassword' | vncpasswd -f > /home/guac/.vnc/passwd
+chmod 600 /home/guac/.vnc/passwd
+
+vi /home/guac/.vnc/xstartup
+#!/bin/sh
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+/etc/X11/xinit/xinitrc
+
+chmod 755 /home/guac/.vnc/xstartup
+
+mkdir /home/guac/bin
+
+vi /home/guac/bin/switchHome.sh
+#!/bin/bash
+xrandr --output VNC-0 --mode 1920x1080
+
+vi /home/guac/bin/switchWork.sh
+#!/bin/bash
+xrandr --output VNC-0 --mode 1280x1024
+
+chmod 755 /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
+
+podman start mycentos
+podman exec -it mycentos su - guac -c "vncserver :1 -geometry 1024x768 -nolisten tcp -localhost"
+
+# vncserver -kill :1
+
