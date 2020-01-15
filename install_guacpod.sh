@@ -19,5 +19,5 @@ podman exec -it some-postgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT 
 
 podman run --pod guacpod --name some-guacamole -e GUACD_HOSTNAME=localhost -e GUACD_PORT=4822 -e POSTGRES_HOSTNAME=localhost -e POSTGRES_DATABASE=guacamole_db -e POSTGRES_USER=guacamole_user -e POSTGRES_PASSWORD=guacamole_pass -d guacamole/guacamole:1.0.0
 
-
+podman run --pod guacpod --privileged --shm-size=256m --name mycentosvnc -h mycentosvnc -it localhost/mycentosvnc
 
