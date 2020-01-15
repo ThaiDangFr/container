@@ -19,18 +19,19 @@ enabled=1
 gpgcheck=1
 gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub" > ${mountpoint}/etc/yum.repos.d/google-chrome.repo
 
-buildah run $container yum -y install epel-release tigervnc-server fluxbox xterm wget unzip xorg-x11-apps xorg-x11-fonts* dbus-x11 google-chrome-stable
+# no need for dbus-x11 ?
+buildah run $container yum -y install epel-release tigervnc-server fluxbox xterm wget unzip xorg-x11-apps xorg-x11-fonts* google-chrome-stable
 buildah run $container yum clean all
 buildah run $container useradd guac
 
 cat <<EOF > $mountpoint/home/guac/.Xclients 
 xsetroot -solid grey
-xterm -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &
+xterm -geometry 80x24+10+10 -ls -title "\$VNCDESKTOP Desktop" &
 startfluxbox &
 EOF
 
 buildah run $container chmod 755 /home/guac/.Xclients
-buildah run $container chown guac:guac $mountpoint/home/guac/.Xclients
+buildah run $container chown guac:guac /home/guac/.Xclients
 
 buildah run $container su - guac -c "mkdir /home/guac/.vnc"
 buildah run $container chmod 755 /home/guac/.vnc
@@ -64,5 +65,6 @@ buildah run $container chown guac:guac /home/guac/bin/switchHome.sh /home/guac/b
 
 buildah config --entrypoint "su - guac -c 'vncserver :1 -geometry 1024x768 -nolisten tcp -localhost'" $container
 buildah commit --format docker $container mycentosvnc
-buildah unmount $containerid
+buildah umount $containerid
+umount $mountpoint
 
