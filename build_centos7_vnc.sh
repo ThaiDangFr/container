@@ -20,7 +20,8 @@ gpgcheck=1
 gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub" > ${mountpoint}/etc/yum.repos.d/google-chrome.repo
 
 # no need for dbus-x11 ?
-buildah run $container yum -y install epel-release tigervnc-server fluxbox xterm wget unzip xorg-x11-apps xorg-x11-fonts* google-chrome-stable
+buildah run $container yum -y install epel-release
+buildah run $container yum -y install tigervnc-server fluxbox xterm wget unzip xorg-x11-apps xorg-x11-fonts* google-chrome-stable
 buildah run $container yum clean all
 buildah run $container useradd guac
 
@@ -63,8 +64,9 @@ EOF
 buildah run $container chmod 755 /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
 buildah run $container chown guac:guac /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
 
-buildah config --entrypoint "su - guac -c 'vncserver :1 -geometry 1024x768 -nolisten tcp -localhost -fg'" $container
-buildah commit --format docker $container mycentosvnc
-buildah umount $containerid
-umount $mountpoint
+#buildah config --entrypoint "su - guac -c 'vncserver :1 -geometry 1024x768 -nolisten tcp -localhost' && tail -f /dev/null" $container
+#buildah config --cmd "su - guac -c 'tail -f /home/guac/.vnc/*.log'" $container
+#buildah commit --format docker $container mycentosvnc
+#buildah umount $containerid
+#umount $mountpoint
 
