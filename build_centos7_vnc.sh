@@ -25,48 +25,10 @@ buildah run $container yum -y install tigervnc-server fluxbox xterm wget unzip x
 buildah run $container yum clean all
 buildah run $container useradd guac
 
-cat <<EOF > $mountpoint/home/guac/.Xclients 
-xsetroot -solid grey
-xterm -geometry 80x24+10+10 -ls -title "\$VNCDESKTOP Desktop" &
-startfluxbox &
-EOF
+cp ./entrypoint.sh $mountpoint/root/entrypoint.sh
 
-buildah run $container chmod 755 /home/guac/.Xclients
-buildah run $container chown guac:guac /home/guac/.Xclients
-
-buildah run $container su - guac -c "mkdir /home/guac/.vnc"
-buildah run $container chmod 755 /home/guac/.vnc
-buildah run $container su - guac -c "echo 'myvncpassword' | vncpasswd -f > /home/guac/.vnc/passwd"
-buildah run $container chmod 600 /home/guac/.vnc/passwd
-
-cat <<EOF > $mountpoint/home/guac/.vnc/xstartup
-#!/bin/sh
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
-/etc/X11/xinit/xinitrc
-EOF
-
-buildah run $container chmod 755 /home/guac/.vnc/xstartup
-buildah run $container chown guac:guac /home/guac/.vnc/xstartup
-
-buildah run $container su - guac -c "mkdir /home/guac/bin"
-
-cat <<EOF > $mountpoint/home/guac/bin/switchHome.sh
-#!/bin/bash
-xrandr --output VNC-0 --mode 1920x1080
-EOF
-
-cat <<EOF > $mountpoint/home/guac/bin/switchWork.sh
-#!/bin/bash
-xrandr --output VNC-0 --mode 1280x1024
-EOF
-
-buildah run $container chmod 755 /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
-buildah run $container chown guac:guac /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
-
-#buildah config --entrypoint "su - guac -c 'vncserver :1 -geometry 1024x768 -nolisten tcp -localhost' && tail -f /dev/null" $container
-#buildah config --cmd "su - guac -c 'tail -f /home/guac/.vnc/*.log'" $container
-#buildah commit --format docker $container mycentosvnc
-#buildah umount $containerid
-#umount $mountpoint
+buildah config --entrypoint "/root/entrypoint.sh" $container
+buildah commit --format docker $container mycentosvnc
+buildah umount $containerid
+umount $mountpoint
 

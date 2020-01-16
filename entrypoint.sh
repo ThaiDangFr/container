@@ -1,9 +1,11 @@
 #!/bin/bash
 
+source $HOME/.bashrc
+
 cat <<EOF > /home/guac/.Xclients 
 xsetroot -solid grey
 xterm -geometry 80x24+10+10 -ls -title "\$VNCDESKTOP Desktop" &
-#startfluxbox &
+startfluxbox &
 EOF
 
 chmod 755 /home/guac/.Xclients
@@ -40,11 +42,11 @@ chmod 755 /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
 chown guac:guac /home/guac/bin/switchHome.sh /home/guac/bin/switchWork.sh
 
 echo "remove old vnc locks to be a reattachable container"
-vncserver -kill :1 || rm -rfv /tmp/.X*-lock /tmp/.X11-unix || echo "no locks present"
+su - guac -c "vncserver -kill :1" || rm -rfv /tmp/.X*-lock /tmp/.X11-unix || echo "no locks present"
 
-vncserver :1 -geometry 1024x768 -nolisten tcp -localhost
-/usr/bin/startfluxbox &
-
+su - guac -c "vncserver :1 -geometry 1024x768 -nolisten tcp -localhost"
+sleep 5
+tail -f /home/guac/.vnc/*:1.log
 
 
 
