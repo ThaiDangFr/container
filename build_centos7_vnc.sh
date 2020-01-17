@@ -25,7 +25,7 @@ buildah run $container yum -y install tigervnc-server fluxbox xterm wget unzip x
 buildah run $container yum clean all
 buildah run $container useradd guac
 
-cp ./entrypoint.sh $mountpoint/root/entrypoint.sh
+cp ./guacamole/entrypoint.sh $mountpoint/root/entrypoint.sh
 
 buildah config --entrypoint "/root/entrypoint.sh" $container
 buildah commit --format docker $container mycentosvnc

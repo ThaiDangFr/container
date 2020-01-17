@@ -1,15 +1,15 @@
 #!/bin/bash
 
 echo "1) Stopping containers and pod"
-podman stop some-guacamole
-podman stop some-postgres
-podman stop some-guacd
+podman stop myguacamole
+podman stop mypostgres
+podman stop myguacd
 podman stop mycentosvnc
 podman pod stop guacpod
 
 echo "2) Removing containers and pod"
-podman rm some-guacamole
-podman rm some-postgres
-podman rm some-guacd
+podman rm myguacamole
+podman rm mypostgres
+podman rm myguacd
 podman rm mycentosvnc
 podman pod rm guacpod
