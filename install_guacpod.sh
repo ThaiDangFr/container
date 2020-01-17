@@ -1,5 +1,9 @@
 #!/bin/bash
 
+mkdir -p /root/run/guacamole/pgdata
+chmod 777 /root/run/guacamole/pgdata
+
+
 echo "1) Creating pod"
 podman pod create --publish 1000:8080 --publish 1001:5901 --name guacpod
 
@@ -13,7 +17,7 @@ podman run --rm guacamole/guacamole:1.0.0 /opt/guacamole/bin/initdb.sh --postgre
 
 echo "4) Creating postgres container"
 podman pull docker.io/library/postgres:12.1
-podman run --pod guacpod --name mypostgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql -v pgdata:/var/lib/postgresql/data -d postgres:12.1
+podman run --pod guacpod --name mypostgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql -v /root/run/guacamole/pgdata:/var/lib/postgresql/data -d postgres:12.1
 sleep 10
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO guacamole_user;'
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO guacamole_user;'
@@ -21,4 +25,3 @@ podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SEL
 podman run --pod guacpod --name myguacamole -e GUACD_HOSTNAME=localhost -e GUACD_PORT=4822 -e POSTGRES_HOSTNAME=localhost -e POSTGRES_DATABASE=guacamole_db -e POSTGRES_USER=guacamole_user -e POSTGRES_PASSWORD=guacamole_pass -d guacamole/guacamole:1.0.0
 
 podman run --pod guacpod --name mycentosvnc --privileged --shm-size=1024m --memory=1024m --memory-swap=1024m -h mycentosvnc -d localhost/mycentosvnc
-
