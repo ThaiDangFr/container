@@ -1,7 +1,8 @@
-# guacamole : port 1000
-# vncserver : port 1001
-# etherpad  : port 1002
-# jspwiki   : port 1003
+# nginx     : port 2000
+# guacamole : port 2001
+# vncserver : port 2002
+# etherpad  : port 2003
+# jspwiki   : port 2004
 
 
 # procedure
@@ -9,7 +10,7 @@
 ./install_guacpod.sh or ./uninstall_guacpod.sh
 
 # access to guacamole
-http://localhost:1000/guacamole/
+http://localhost:2001/guacamole/
 guacadmin/guacadmin
 
 -> change the guacadmin password
@@ -26,7 +27,7 @@ Reseau port:5901
 
 
 # access with vncviewer via ssh connection
-vncviewer -via centos@<hostname> -QualityLevel 9 -NoJPEG -FullScreen localhost::1001
+vncviewer -via centos@<hostname> -QualityLevel 9 -NoJPEG -FullScreen localhost::2002
 
 # etherpad
 ./install_etherpad.sh or ./uninstall_etherpad.sh

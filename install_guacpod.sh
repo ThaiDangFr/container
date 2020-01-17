@@ -5,7 +5,7 @@ chmod 777 $HOME/run/guacamole/pgdata
 
 
 echo "1) Creating pod"
-podman pod create --publish 1000:8080 --publish 1001:5901 --name guacpod
+podman pod create --publish 2001:8080 --publish 2002:5901 --name guacpod
 
 echo "2) Creating guacd container"
 podman pull docker.io/guacamole/guacd:1.0.0
