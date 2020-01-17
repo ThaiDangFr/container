@@ -12,8 +12,8 @@ podman pull docker.io/guacamole/guacamole:1.0.0
 podman run --rm guacamole/guacamole:1.0.0 /opt/guacamole/bin/initdb.sh --postgres > /tmp/initdb.sql
 
 echo "4) Creating postgres container"
-podman pull docker.io/library/postgres
-podman run --pod guacpod --name mypostgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql -d postgres
+podman pull docker.io/library/postgres:12.1
+podman run --pod guacpod --name mypostgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql -v pgdata:/var/lib/postgresql/data -d postgres:12.1
 sleep 10
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO guacamole_user;'
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO guacamole_user;'
