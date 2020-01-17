@@ -1,3 +1,9 @@
+# guacamole : port 1000
+# vncserver : port 1001
+# etherpad  : port 1002
+# jspwiki   : port 1003
+
+
 # procedure
 ./build_centos7_vnc.sh
 ./install_guacpod.sh or ./uninstall_guacpod.sh
@@ -22,3 +28,8 @@ Reseau port:5901
 # access with vncviewer via ssh connection
 vncviewer -via centos@<hostname> -QualityLevel 9 -NoJPEG -FullScreen localhost::1001
 
+# etherpad
+./install_etherpad.sh or ./uninstall_etherpad.sh
+
+# jspwiki
+./install_jspwiki.sh
