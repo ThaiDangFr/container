@@ -1,7 +1,8 @@
 #!/bin/bash
 
 mkdir -p $HOME/run/guacamole/pgdata
-chmod 777 $HOME/run/guacamole/pgdata
+chmod -R 755 $HOME/run/guacamole
+chown 999:999 $HOME/run/guacamole/pgdata
 
 echo "0) Creating pod"
 podman pod create --name mypod -p 2001:8080 -p 2002:5901
@@ -13,10 +14,11 @@ podman run --pod mypod --name myguacd -d guacamole/guacd:1.0.0
 echo "2) Creating guacamole container"
 podman pull docker.io/guacamole/guacamole:1.0.0
 podman run --rm guacamole/guacamole:1.0.0 /opt/guacamole/bin/initdb.sh --postgres > /tmp/initdb.sql
+chmod 755 /tmp/initdb.sql
 
 echo "3) Creating postgres container"
 podman pull docker.io/library/postgres:12.1
-podman run --pod mypod --name mypostgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql -v $HOME/run/guacamole/pgdata:/var/lib/postgresql/data -d postgres:12.1
+podman run --pod mypod --name mypostgres -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:z -v $HOME/run/guacamole/pgdata:/var/lib/postgresql/data:z -d postgres:12.1
 sleep 10
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO guacamole_user;'
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO guacamole_user;'
