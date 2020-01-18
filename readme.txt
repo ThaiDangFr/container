@@ -5,9 +5,12 @@
 # jspwiki   : port 2004
 
 
-# procedure
+############################
+# procedure d installation #
+############################
+./install_pod.sh
 ./build_centos7_vnc.sh
-./install_guacpod.sh or ./uninstall_guacpod.sh
+./install_guacamole.sh
 
 # access to guacamole
 http://localhost:2001/guacamole/
@@ -30,7 +33,10 @@ Reseau port:5901
 vncviewer -via centos@<hostname> -QualityLevel 9 -NoJPEG -FullScreen localhost::2002
 
 # etherpad
-./install_etherpad.sh or ./uninstall_etherpad.sh
+./install_etherpad.sh
 
 # jspwiki
 ./install_jspwiki.sh
+
+# nginx
+./install_nginx.sh
