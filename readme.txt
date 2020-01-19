@@ -1,4 +1,4 @@
-# nginx     : port 2000
+# nginx     : port 80
 # guacamole : port 2001
 # vncserver : port 2002
 # etherpad  : port 2003
