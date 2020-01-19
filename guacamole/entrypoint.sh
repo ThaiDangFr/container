@@ -13,7 +13,7 @@ chown guac:guac /home/guac/.Xclients
 
 su - guac -c "mkdir /home/guac/.vnc"
 chmod 755 /home/guac/.vnc
-su - guac -c "echo 'myvncpassword' | vncpasswd -f > /home/guac/.vnc/passwd"
+su - guac -c "echo 'mycentosvnc' | vncpasswd -f > /home/guac/.vnc/passwd"
 chmod 600 /home/guac/.vnc/passwd
 
 cat <<EOF > /home/guac/.vnc/xstartup

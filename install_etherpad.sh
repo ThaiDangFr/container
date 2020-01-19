@@ -5,4 +5,6 @@ chmod 755 $HOME/run/etherpad/var $HOME/run/etherpad/cfg
 cp etherpad/settings.json $HOME/run/etherpad/cfg
 chown -R 5001:5001 $HOME/run/etherpad
 podman pull docker.io/etherpad/etherpad:1.8.0
-podman run -d --name myetherpad --network=mynetwork -p 2003:9001 -v $HOME/run/etherpad/var:/opt/etherpad-lite/var:z -v $HOME/run/etherpad/cfg/settings.json:/opt/etherpad-lite/settings.json:z -e NODE_ENV=production etherpad/etherpad:1.8.0
+
+# etherpad port is 9001
+podman run -d --name myetherpad --hostname myetherpad --ip=10.88.0.13 -v $HOME/run/etherpad/var:/opt/etherpad-lite/var:z -v $HOME/run/etherpad/cfg/settings.json:/opt/etherpad-lite/settings.json:z -e NODE_ENV=production etherpad/etherpad:1.8.0

@@ -1,14 +1,15 @@
-# nginx     : port 80
-# guacamole : port 2001
-# vncserver : port 2002
-# etherpad  : port 2003
-# jspwiki   : port 2004
+# nginx     : ip=10.88.0.10 external_port=80
+# guacamole : ip=10.88.0.11 internal_port=8080
+# guacd     : ip=10.88.0.12 internal_port=4822
+# etherpad  : ip=10.88.0.13 internal_port=9001
+# jspwiki   : ip=10.88.0.14 internal_port=8080
+# postgres  : ip=10.88.0.15 internal_port=5432
+# centosvnc : ip=10.88.0.16 external_port=5901
 
 
 ############################
 # procedure d installation #
 ############################
-podman network create mynetwork
 ./build_centos7_vnc.sh
 ./install_guacamole.sh
 
@@ -22,15 +23,16 @@ parametres/preferences
 -> create a new connection
 Nom:VNC
 Protocole:VNC
-Guacd hostname:localhost
+Guacd hostname:10.88.0.12
 Guacd port:4822
 Encryption:None
-Reseau hote:localhost
+Reseau hote:10.88.0.16
 Reseau port:5901
-
+Mot de passe:mycentosvnc
 
 # access with vncviewer via ssh connection
-vncviewer -via centos@<hostname> -QualityLevel 9 -NoJPEG -FullScreen localhost::2002
+# example : 
+vncviewer -via centos@minis.home -QualityLevel 9 -NoJPEG -FullScreen localhost::5901
 
 # etherpad
 ./install_etherpad.sh
