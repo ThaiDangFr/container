@@ -8,7 +8,7 @@
 ############################
 # procedure d installation #
 ############################
-./install_pod.sh
+podman network create mynetwork
 ./build_centos7_vnc.sh
 ./install_guacamole.sh
 
