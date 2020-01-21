@@ -2,6 +2,8 @@
 
 set -o errexit
 
+buildah rmi mynginxssl || true
+
 container=$(buildah from docker.io/nginx:stable-alpine)
 containerid=$(buildah containers --filter name=${container} -q)
 mountpoint=$(buildah mount $containerid)
@@ -24,4 +26,4 @@ buildah config --entrypoint "/root/entrypoint.sh" $container
 buildah commit --format docker $container mynginxssl
 buildah umount $containerid
 umount $mountpoint
-
+buildah rm $container

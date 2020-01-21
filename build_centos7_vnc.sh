@@ -2,6 +2,7 @@
 
 set -o errexit
 
+buildah rmi mycentosvnc || true
 container=$(buildah from centos:centos7.7.1908)
 containerid=$(buildah containers --filter name=${container} -q)
 mountpoint=$(buildah mount $containerid)
@@ -31,4 +32,4 @@ buildah config --entrypoint "/root/entrypoint.sh" $container
 buildah commit --format docker $container mycentosvnc
 buildah umount $containerid
 umount $mountpoint
-
+buildah rm $container

@@ -25,12 +25,18 @@ if [ ! -d /usr/share/nginx/certificates ];then
     done   
 fi
 
+OPTIONS=""
+if [ $ENVT != "PROD" ];then
+    OPTIONS="--dry-run"
+fi
+
 # create or renew
 for s in $SUBDOMAINS; do
-    certbot certonly --config-dir /etc/letsencrypt --agree-tos -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --expand --noninteractive --webroot --webroot-path /var/www/certbot  
+    echo "certbot certonly --config-dir /etc/letsencrypt --agree-tos -d $s.dangconsulting.fr --email \"ssl@dangconsulting.fr\" --expand --noninteractive --webroot --webroot-path /var/www/certbot $OPTIONS"
+    certbot certonly --config-dir /etc/letsencrypt --agree-tos -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --expand --noninteractive --webroot --webroot-path /var/www/certbot $OPTIONS
     sleep 1
 done
 
 nginx -s reload
-tail -f /var/log/nginx/access.log
+#tail -f /var/log/nginx/access.log
   
