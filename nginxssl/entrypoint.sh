@@ -2,41 +2,21 @@
 
 SUBDOMAINS="guacamole acacias etherpad jspwiki"
 
-# first boot (initialize self signed ssl)
-if [ ! -d /usr/share/nginx/certificates ];then
-    mkdir -p /usr/share/nginx/certificates
-    mkdir -p /var/www/certbot
-    
-    openssl genrsa -out /usr/share/nginx/certificates/privkey.pem 4096
-    openssl req -new -key /usr/share/nginx/certificates/privkey.pem -out /usr/share/nginx/certificates/cert.csr -nodes -subj "/C=PT/ST=World/L=World/O=dangconsulting/OU=dangconsulting/CN=dangconsulting.fr/"
-    openssl x509 -req -days 365 -in /usr/share/nginx/certificates/cert.csr -signkey /usr/share/nginx/certificates/privkey.pem -out /usr/share/nginx/certificates/fullchain.pem
+certbot plugins --init
+certbot plugins --prepare
 
+if [ $ENVT == "PROD" ];then
+    nginx
+    sleep 1
 
     for s in $SUBDOMAINS; do
-	mkdir -p /etc/letsencrypt/live/$s.dangconsulting.fr
-	cp /usr/share/nginx/certificates/*.pem /etc/letsencrypt/live/$s.dangconsulting.fr/
+	echo "certbot --nginx -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --agree-tos --no-eff-email"
+	certbot --nginx -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --agree-tos --no-eff-email
+	sleep 1
     done
 
-    nginx    
+    nginx -s stop
     sleep 1
-
-    for s in $SUBDOMAINS; do
-	rm -rf /etc/letsencrypt/live/$s.dangconsulting.fr/
-    done   
 fi
 
-OPTIONS=""
-if [ $ENVT != "PROD" ];then
-    OPTIONS="--dry-run"
-fi
-
-# create or renew
-for s in $SUBDOMAINS; do
-    echo "certbot certonly --config-dir /etc/letsencrypt --agree-tos -d $s.dangconsulting.fr --email \"ssl@dangconsulting.fr\" --expand --noninteractive --webroot --webroot-path /var/www/certbot $OPTIONS"
-    certbot certonly --config-dir /etc/letsencrypt --agree-tos -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --expand --noninteractive --webroot --webroot-path /var/www/certbot $OPTIONS
-    sleep 1
-done
-
-nginx -s reload
-#tail -f /var/log/nginx/access.log
-  
+nginx -t && nginx -g "daemon off;"
