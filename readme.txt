@@ -41,8 +41,13 @@ vncviewer -via centos@minis.home -QualityLevel 9 -NoJPEG -FullScreen localhost::
 ./install_jspwiki.sh
 
 # nginx ssl test
-./install_nginxssl.sh 2080 2443 TEST
+./install_nginx.sh 2080 2443 TEST
 
 # nginx ssl mise en prod : (va requeter les certificats)
-./install_nginxssl.sh 80 443 PROD
+./install_nginx.sh 80 443 PROD
+
+# aller faire une verif pour le renouvellement du certificat (normalement automatique)
+podman exec -it mynginx /bin/sh
+certbot renew
+
 
