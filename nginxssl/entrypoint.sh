@@ -14,8 +14,8 @@ nginx
 sleep 1
 
 for s in $SUBDOMAINS; do
-    echo "certbot --nginx -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --agree-tos --no-eff-email $OPTIONS"
-    certbot --nginx -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --agree-tos --no-eff-email $OPTIONS
+    echo "certbot --nginx -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --agree-tos --no-eff-email --redirect --reinstall $OPTIONS"
+    certbot --nginx -d $s.dangconsulting.fr --email "ssl@dangconsulting.fr" --agree-tos --no-eff-email --redirect --reinstall $OPTIONS
     sleep 1
 done
 
