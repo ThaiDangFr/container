@@ -47,12 +47,12 @@
 // If that seems too loose for your needs, you can restrict page-viewing
 // privileges by moving the PagePermission 'view' grant to one of the other blocks.
 
-grant principal org.apache.wiki.auth.authorize.Role "All" {
-    permission org.apache.wiki.auth.permissions.PagePermission "*:*", "view";
-    permission org.apache.wiki.auth.permissions.WikiPermission "*", "editPreferences";
-    permission org.apache.wiki.auth.permissions.WikiPermission "*", "editProfile";
-    permission org.apache.wiki.auth.permissions.WikiPermission "*", "login";
-};
+//grant principal org.apache.wiki.auth.authorize.Role "All" {
+//    permission org.apache.wiki.auth.permissions.PagePermission "*:*", "view";
+//    permission org.apache.wiki.auth.permissions.WikiPermission "*", "editPreferences";
+//    permission org.apache.wiki.auth.permissions.WikiPermission "*", "editProfile";
+//    permission org.apache.wiki.auth.permissions.WikiPermission "*", "login";
+//};
 
 
 // The second policy block is extremely loose, and unsuited for public-facing wikis.
@@ -65,10 +65,10 @@ grant principal org.apache.wiki.auth.authorize.Role "All" {
 // Note that "modify" implies *both* "edit" and "upload", so if you wish to
 // allow editing only, then replace "modify" with "edit".
 
-grant principal org.apache.wiki.auth.authorize.Role "Anonymous" {
-    permission org.apache.wiki.auth.permissions.PagePermission "*:*", "modify";
-    permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages";
-};
+//grant principal org.apache.wiki.auth.authorize.Role "Anonymous" {
+//    permission org.apache.wiki.auth.permissions.PagePermission "*:*", "modify";
+//    permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages";
+//};
 
 
 // This next policy block is also pretty loose. It allows users who claim to
@@ -76,11 +76,11 @@ grant principal org.apache.wiki.auth.authorize.Role "Anonymous" {
 // as well as upload files.
 // They can also view the membership list of groups.
 
-grant principal org.apache.wiki.auth.authorize.Role "Asserted" {
-    permission org.apache.wiki.auth.permissions.PagePermission "*:*", "modify";
-    permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages";
-    permission org.apache.wiki.auth.permissions.GroupPermission "*:*", "view";
-};
+//grant principal org.apache.wiki.auth.authorize.Role "Asserted" {
+//    permission org.apache.wiki.auth.permissions.PagePermission "*:*", "modify";
+//    permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages";
+//    permission org.apache.wiki.auth.permissions.GroupPermission "*:*", "view";
+//};
 
 
 // Authenticated users can do most things: view, create, edit and
@@ -91,8 +91,9 @@ grant principal org.apache.wiki.auth.authorize.Role "Asserted" {
 grant principal org.apache.wiki.auth.authorize.Role "Authenticated" {
     permission org.apache.wiki.auth.permissions.PagePermission "*:*", "modify,rename";
     permission org.apache.wiki.auth.permissions.GroupPermission "*:*", "view";
-    permission org.apache.wiki.auth.permissions.GroupPermission "*:<groupmember>", "edit";
-    permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages,createGroups";
+    //permission org.apache.wiki.auth.permissions.GroupPermission "*:<groupmember>", "edit";
+    //permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages,createGroups";
+    permission org.apache.wiki.auth.permissions.WikiPermission "*", "createPages,editPreferences,editProfile,login";
 };
 
 

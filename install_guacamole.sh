@@ -23,6 +23,7 @@ chmod 755 /tmp/initdb.sql
 podman pull docker.io/library/postgres:12.1
 podman run --name mypostgres --hostname mypostgres --ip $POSTGRES_IP -e POSTGRES_PASSWORD=guacamole_pass -e POSTGRES_USER=guacamole_user -e POSTGRES_DB=guacamole_db -v /tmp/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:z -v $HOME/run/guacamole/pgdata:/var/lib/postgresql/data:z -d postgres:12.1
 sleep 10
+rm -f /tmp/initdb.sql
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO guacamole_user;'
 podman exec -it mypostgres  psql -Uguacamole_user  -a guacamole_db -c 'GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO guacamole_user;'
 

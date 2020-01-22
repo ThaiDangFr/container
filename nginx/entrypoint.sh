@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SUBDOMAINS="guacamole acacias etherpad jspwiki"
+SUBDOMAINS="guacamole etherpad jspwiki"
 
 certbot plugins --init
 certbot plugins --prepare
