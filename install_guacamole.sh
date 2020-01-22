@@ -9,8 +9,10 @@ chown 999:999 $HOME/run/guacamole/pgdata
 
 # guacd port is 4822
 echo "1) Creating guacd container"
-podman pull docker.io/guacamole/guacd:1.0.0
-podman run --name myguacd --hostname myguacd --ip $GUACD_IP -d guacamole/guacd:1.0.0
+#podman pull docker.io/guacamole/guacd:1.0.0
+#podman run --name myguacd --hostname myguacd --ip $GUACD_IP -d guacamole/guacd:1.0.0
+podman pull docker.io/guacamole/guacd:0.9.14
+podman run --name myguacd --hostname myguacd --ip $GUACD_IP -d guacamole/guacd:0.9.14
 
 # postgres port is 5432
 echo "2) Creating postgres container"
