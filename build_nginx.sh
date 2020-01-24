@@ -23,5 +23,5 @@ buildah run $container chmod 755 /root/entrypoint.sh /etc/periodic/monthly/certb
 
 buildah config --entrypoint "/root/entrypoint.sh" $container
 buildah commit --format docker $container mynginx
-buildah umount $containerid
+#buildah umount $containerid
 buildah rm $container
