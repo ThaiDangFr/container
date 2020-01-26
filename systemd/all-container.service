@@ -1,0 +1,13 @@
+[Unit]
+Description=All containers
+After=syslog.target network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/runuser -l root -c "/root/run/systemd/startall.sh"
+#PIDFile=/root/run/systemd/%H%i.pid
+ExecStop=/usr/sbin/runuser -l root -c "/root/run/systemd/stopall.sh"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
