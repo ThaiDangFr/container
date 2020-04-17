@@ -47,6 +47,7 @@ vncviewer -via centos@minis.home -QualityLevel 9 -NoJPEG -FullScreen localhost::
 ./install_nginx.sh 80 443 PROD
 
 # aller faire une verif pour le renouvellement du certificat (normalement automatique)
+# certbot certificates : display expiration dates
 podman exec -it mynginx /bin/sh
 certbot renew
 
