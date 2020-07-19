@@ -12,9 +12,10 @@ echo "containerid=$containerid"
 
 buildah config --label maintainer="ThaiDangFr" $container
 
-buildah run $container apk add inotify-tools certbot certbot-nginx openssl ca-certificates openrc busybox-initscripts
+buildah run $container apk add inotify-tools certbot certbot-nginx openssl ca-certificates #openrc busybox-initscripts
 buildah run $container rm -rf /var/cache/apk/*
-buildah run $container rc-update add crond
+#buildah run $container rc-service crond start
+#buildah run $container rc-update add crond
 
 buildah copy $container ./nginx/entrypoint.sh /root/entrypoint.sh
 buildah copy $container ./nginx/*.conf /etc/nginx/conf.d/

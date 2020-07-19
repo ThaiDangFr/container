@@ -2,6 +2,7 @@
 
 SUBDOMAINS="guacamole etherpad jspwiki"
 
+crond
 certbot plugins --init
 certbot plugins --prepare
 

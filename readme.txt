@@ -52,3 +52,8 @@ podman exec -it mynginx /bin/sh
 certbot renew
 
 
+# maintenance arret / demarrage
+démarrer les services : systemctl start all-container
+stopper les services  : systemctl stop all-container
+vérifier les services : systemctl status all-container puis podman ps -a
+en cas de probleme demarrer a la main : podman start myjdownloader myjspwiki myplex mypostgres myguacamole mynginx mycentosvnc myguacd myetherpad 
